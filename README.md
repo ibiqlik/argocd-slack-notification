@@ -22,14 +22,14 @@ argocd:
 
 ### `secrets.yaml`
 
-Provide either `argocdAdminPass` or `argocdToken` but recommended if you create a `GET` only Role in ArgoCD and static token.
+Provide either `argocdAdminPass` or `argocdToken` but I strongly recommended if you create a `GET` only Role in ArgoCD create static token for that role and use `argocdToken`
 
 ```
 apiVersion: v1
 kind: Secret
 metadata:
   name: argo-hook-secrets
-  namespace: {{ .Values.namespace }}
+  namespace: {{ $.Values.argocd.namespace }}
 stringData:
   argocdAdminPass: ""
   argocdToken: ""
