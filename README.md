@@ -1,0 +1,1 @@
+# argocd-slack-notification
