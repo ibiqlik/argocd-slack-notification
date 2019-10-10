@@ -4,7 +4,8 @@ To be used with ArgoCD Hooks for sending Slack attachment
 
 ## Helm templates
 
-`values.yaml`
+### `values.yaml`
+
 ```
 argocd:
   enabled: true
@@ -12,7 +13,6 @@ argocd:
   url:
   appName:
   slack:
-    webhookUrl:
     channel:
     hooks:
       - PostSync
@@ -20,7 +20,7 @@ argocd:
 ...
 ```
 
-`secrets.yaml`
+### `secrets.yaml`
 
 Provide either `argocdAdminPass` or `argocdToken` but recommended if you create a `GET` only Role in ArgoCD and static token.
 
@@ -34,10 +34,10 @@ stringData:
   argocdAdminPass: ""
   argocdToken: ""
   githubToken: ""
+  slackWebhookUrl: ""
 ```
 
-
-`slackstatus.yaml`
+### `slackstatus.yaml`
 ```
 {{- if .Values.argocd.enabled }}
 {{- range $hook := $.Values.argocd.slack.hooks }}
@@ -54,7 +54,7 @@ spec:
     spec:
       containers:
       - name: slack-status-post
-        image: ilirbekteshi/argocd-github-status
+        image: ilirbekteshi/argocd-slack-notification
         env:
           - name: ARGOCD_HOOKSTATE
             value: {{ $hook }}
@@ -68,7 +68,10 @@ spec:
                 name: argo-hook-secrets
                 key: argocdToken
           - name: SLACK_WEBHOOK_URL
-            value: {{ $.Values.argocd.slack.webhookUrl }}
+            valueFrom:
+              secretKeyRef:
+                name: argo-hook-secrets
+                key: slackWebhookUrl
           - name: SLACK_CHANNEL
             value: {{ $.Values.argocd.slack.channel }}
       restartPolicy: Never
