@@ -1,12 +1,15 @@
 #!/bin/sh
 
 # Required environment variables:
-#     ARGOCD_SERVER
-#     ARGOCD_ADMIN_PASS or ARGOCD_TOKEN
-#     ARGOCD_APP
-#     ARGOCD_HOOKSTATE
-#     SLACK_WEBHOOK_URL
-#     SLACK_CHANNEL
+#    ARGOCD_SERVER
+#    ARGOCD_ADMIN_PASS or ARGOCD_TOKEN
+#    ARGOCD_APP
+#    ARGOCD_HOOKSTATE
+#    SLACK_WEBHOOK_URL
+#    SLACK_CHANNEL
+
+# Optional environment variables:
+#    SLACK_PRETEXT
 
 if [ -z "$ARGOCD_SERVER" ] || [ -z "$ARGOCD_APP" ] || [ -z "$ARGOCD_HOOKSTATE" ] || [ -z "$SLACK_WEBHOOK_URL" ] || [ -z "$SLACK_CHANNEL" ]; then
   echo 'One or more of the required variables are not set'
@@ -26,6 +29,10 @@ fi
 if [ -z "$ARGOCD_TOKEN" ]; then
     echo "ARGOCD_TOKEN is empty"
     exit 1
+fi
+
+if [ -z "SLACK_PRETEXT" ]; then
+    SLACK_PRETEXT="ArgoCD"
 fi
 
 # Get token, or simply use it if it was provided as env var
@@ -69,7 +76,7 @@ generate_data()
             "title": "Application: $ARGOCD_APP",
             "title_link": "$ARGOCD_APP_URL",
             "color": "$COLOR",
-            "pretext": "ArgoCD",
+            "pretext": "$SLACK_PRETEXT",
             "fields": [
                 {
                     "title": "Status",

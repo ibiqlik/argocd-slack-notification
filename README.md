@@ -2,6 +2,8 @@
 
 To be used with ArgoCD Hooks for sending Slack attachment
 
+![SlackMessageSample](docs/img/slack-sample.png)
+
 ## Helm templates
 
 ### `values.yaml`
@@ -14,7 +16,8 @@ argocd:
   appName:
   slack:
     channel:
-    hooks:
+    pretext: # Freetext; for example identifying an enviornment "Production enviornment"
+    hooks: # Hooks on which the job should be triggered
       - PostSync
       - SyncFail
 ...
@@ -74,6 +77,8 @@ spec:
                 key: slackWebhookUrl
           - name: SLACK_CHANNEL
             value: {{ $.Values.argocd.slack.channel }}
+          - name: SLACK_PRETEXT
+            value: {{ $.Values.argocd.slack.pretext }}
       restartPolicy: Never
   backoffLimit: 4
 ---
