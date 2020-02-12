@@ -1,3 +1,5 @@
+# Repo will be archived in favor of https://argoproj-labs.github.io/argocd-notifications
+
 # argocd-slack-notification
 
 To be used with ArgoCD Hooks for sending Slack attachment
